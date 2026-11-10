@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Personaliza una franela de D&G y solicita tu cotización por WhatsApp.">
+<title>Diseña tu franela | D&amp;G Multiservicios</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b0d15;color:#f6f2eb;font:16px/1.5 system-ui,sans-serif}
+header,main,footer{width:min(1100px,100%);margin:auto;padding:20px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;border-bottom:1px solid #504335}
+header img{display:block;width:108px;height:66px;object-fit:contain}
+a,h1{color:#efc263}
+h1{font-size:clamp(36px,8vw,64px);line-height:1.05;margin:10px 0}
+h2{margin-top:0;font-size:21px}
+p{color:#ddd6cb}
+.eyebrow{color:#efc263;font-size:13px;font-weight:750;letter-spacing:.15em}
+.layout{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+.panel{margin:0;padding:clamp(16px,4vw,26px);background:#161923;border:1px solid #504335;border-radius:20px}
+.stage{position:relative;display:grid;place-items:center;background:#444654;border-radius:14px;overflow:hidden;aspect-ratio:1.12}
+.stage svg{width:94%;height:94%;color:var(--shirt,#faf7ef)}
+.print{position:absolute;top:30%;left:34%;width:32%;height:43%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:5%;color:var(--ink,#191720);text-align:center;font-size:clamp(10px,2.5vw,19px);font-weight:800;overflow-wrap:anywhere;line-height:1.12;overflow:hidden}
+.print img{max-width:100%;max-height:62%;object-fit:contain}
+.reference{margin-top:16px}
+.reference img{display:block;width:min(155px,45%);border-radius:8px}
+label{display:block;margin:12px 0 4px;font-weight:650}
+input,select,button{font:inherit}
+input,select{width:100%;min-height:44px;padding:9px 10px;background:#0d1019;color:#f6f2eb;border:1px solid #8b8177;border-radius:8px}
+input[type=file]{font-size:14px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+button{width:100%;margin-top:16px;padding:13px;background:#efc263;color:#17130e;border:0;border-radius:10px;font-weight:800;cursor:pointer}
+small,.hint{color:#ddd6cb;font-size:14px}
+[hidden]{display:none!important}
+:focus-visible{outline:3px solid #efc263;outline-offset:3px}
+footer{border-top:1px solid #504335;margin-top:12px}
+@media(max-width:710px){.layout{grid-template-columns:1fr}.stage{max-height:340px}.stage svg{max-height:100%}.print{font-size:clamp(10px,4vw,19px)}}
+</style>
+</head>
+<body>
+<header>
+  <a href="index.html"><img src="Emblema%20D%26G%20dorado%20y%20cromado.png" alt="Inicio de D&G Multiservicios"></a>
+  <a href="complices.html">Volver a Cómplices</a>
+</header>
+<main>
+  <p class="eyebrow">CAMISETAS PERSONALIZADAS · D&amp;G</p>
+  <h1>Diseña tu franela</h1>
+  <p>Prueba una frase o una imagen sobre tu color favorito. Cuando te guste, solicita una cotización.</p>
+  <div class="layout">
+    <figure class="panel">
+      <h2>Vista previa</h2>
+      <div class="stage" id="stage">
+        <svg viewBox="0 0 320 290" aria-hidden="true">
+          <path d="M117 23 54 48 15 111 67 146 89 117 89 267 231 267 231 117 253 146 305 111 266 48 203 23c-12 20-74 20-86 0Z" fill="currentColor" stroke="#888590" stroke-width="2" stroke-linejoin="round"/>
+          <path d="M117 24c12 37 74 37 86 0M91 118l-4-45m142 45 4-45" fill="none" stroke="#888590" stroke-opacity=".55" stroke-width="2"/>
+        </svg>
+        <div class="print"><img id="art" alt="Tu imagen sobre la franela" hidden><span id="phrase-preview"></span></div>
+      </div>
+      <figcaption class="hint">Vista ilustrativa. D&amp;G confirma el tamaño del estampado y el arte final antes de imprimir.</figcaption>
+      <div class="reference" id="reference" hidden>
+        <p class="hint">Referencia de Cómplices. La vista de arriba muestra tu texto o imagen por separado.</p>
+        <img id="reference-image" alt="">
+      </div>
+    </figure>
+    <form class="panel" id="quote">
+      <h2>Tu personalización</h2>
+      <label for="model">Diseño de referencia</label>
+      <select id="model">
+        <option value="">Mi propio diseño</option>
+        <option value="aqui-nadie-manda">Aquí nadie manda</option>
+        <option value="amor-gps">Amor con GPS</option>
+        <option value="me-gustas">Me gustas</option>
+      </select>
+      <div id="variant-field" hidden>
+        <label for="variant">Versión del diseño</label>
+        <select id="variant"><option value="a">Camiseta A</option><option value="b">Camiseta B</option></select>
+      </div>
+      <label for="phrase">Tu frase <small>(opcional)</small></label>
+      <input id="phrase" maxlength="55" placeholder="Ej. Mi cómplice favorito">
+      <label for="upload">Tu imagen <small>(opcional)</small></label>
+      <input id="upload" type="file" accept="image/png,image/jpeg,image/webp" aria-describedby="upload-help">
+      <small id="upload-help">PNG, JPG o WebP, hasta 10 MB. Si usas una imagen, adjunta el original en el chat de WhatsApp.</small>
+      <div class="row">
+        <div><label for="color">Color</label><select id="color"><option>Blanca</option><option>Negra</option></select></div>
+        <div><label for="size">Talla</label><select id="size" required><option value="">Selecciona</option><option>S</option><option>M</option><option>L</option><option>XL</option><option>XXL</option></select></div>
+      </div>
+      <div class="row">
+        <div><label for="quantity">Cantidad</label><input id="quantity" type="number" min="1" step="1" max="999" value="1" required></div>
+        <div><label for="zone">Zona de entrega</label><input id="zone" required maxlength="80" placeholder="Ej. San Francisco"></div>
+      </div>
+      <button type="submit">Cotizar por WhatsApp</button>
+      <p class="hint">D&amp;G confirma por WhatsApp el precio, el pago y la entrega.</p>
+    </form>
+  </div>
+</main>
+<footer>D&amp;G Multiservicios · Tu solución en un solo lugar.</footer>
+<script>
+const byId = id => document.getElementById(id);
+const model = byId('model');
+const variant = byId('variant');
+const phrase = byId('phrase');
+const upload = byId('upload');
+const art = byId('art');
+const color = byId('color');
+const zone = byId('zone');
+let artUrl;
+
+const requestedModel = new URLSearchParams(location.search).get('modelo');
+if (Array.from(model.options).some(option => option.value === requestedModel)) model.value = requestedModel;
+
+function updateReference() {
+  const hasModel = Boolean(model.value);
+  byId('variant-field').hidden = !hasModel;
+  byId('reference').hidden = !hasModel;
+  const image = byId('reference-image');
+  if (hasModel) {
+    image.src = 'camisetas/complices/' + model.value + '-' + variant.value + '-blanca.jpg';
+    image.alt = model.selectedOptions[0].text + ' · ' + variant.selectedOptions[0].text;
+  } else {
+    image.removeAttribute('src');
+  }
+}
+
+function updatePreview() {
+  const dark = color.value === 'Negra';
+  byId('stage').style.setProperty('--shirt', dark ? '#141419' : '#faf7ef');
+  byId('stage').style.setProperty('--ink', dark ? '#fff7e6' : '#191720');
+  byId('phrase-preview').textContent = phrase.value.trim();
+}
+
+model.addEventListener('change', updateReference);
+variant.addEventListener('change', updateReference);
+phrase.addEventListener('input', updatePreview);
+color.addEventListener('change', updatePreview);
+zone.addEventListener('input', () => zone.setCustomValidity(''));
+upload.addEventListener('change', () => {
+  if (artUrl) URL.revokeObjectURL(artUrl);
+  artUrl = undefined;
+  art.hidden = true;
+  art.removeAttribute('src');
+  upload.setCustomValidity('');
+  const file = upload.files[0];
+  if (!file) return;
+  if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type) || file.size > 10 * 1024 * 1024) {
+    upload.value = '';
+    upload.setCustomValidity('Selecciona un PNG, JPG o WebP de hasta 10 MB.');
+    upload.reportValidity();
+    upload.setCustomValidity('');
+    return;
+  }
+  artUrl = URL.createObjectURL(file);
+  art.src = artUrl;
+});
+art.addEventListener('load', () => { art.hidden = false; });
+art.addEventListener('error', () => {
+  art.hidden = true;
+  upload.value = '';
+  upload.setCustomValidity('No se pudo abrir la imagen. Prueba con otro archivo.');
+  upload.reportValidity();
+  upload.setCustomValidity('');
+});
+
+byId('quote').addEventListener('submit', event => {
+  event.preventDefault();
+  if (!zone.value.trim()) {
+    zone.setCustomValidity('Indica tu zona de entrega.');
+    zone.reportValidity();
+    return;
+  }
+  const design = model.value
+    ? model.selectedOptions[0].text + ' · ' + variant.selectedOptions[0].text
+    : 'Diseño propio';
+  const lines = [
+    'Hola D&G, quiero cotizar una franela personalizada.',
+    'Diseño: ' + design,
+    'Color: ' + color.value,
+    'Talla: ' + byId('size').value,
+    'Cantidad: ' + byId('quantity').value,
+    'Zona de entrega: ' + zone.value.trim()
+  ];
+  if (phrase.value.trim()) lines.push('Frase: ' + phrase.value.trim());
+  if (upload.files.length) lines.push('Adjuntaré mi imagen en este chat.');
+  window.open('https://wa.me/50760951113?text=' + encodeURIComponent(lines.join('\n')), '_blank', 'noopener,noreferrer');
+});
+updateReference();
+updatePreview();
+</script>
+</body>
+</html>
