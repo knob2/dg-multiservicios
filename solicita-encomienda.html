@@ -31,16 +31,17 @@ small,.hint{color:#ddd6cb;font-size:14px}
   <a href="index.html#servicios">Volver a servicios</a>
 </header>
 <main>
-  <p class="eyebrow">ENCOMIENDAS Y DILIGENCIAS · PANAMÁ</p>
-  <h1>Solicita tu encomienda</h1>
-  <p>Cuéntanos qué necesitas. Envía la solicitud por WhatsApp y D&amp;G te confirma disponibilidad, precio y horario.</p>
+  <p class="eyebrow" id="eyebrow">ENCOMIENDAS Y DILIGENCIAS · PANAMÁ</p>
+  <h1 id="heading">Solicita tu encomienda</h1>
+  <p id="intro">Cuéntanos qué necesitas. Envía la solicitud por WhatsApp y D&amp;G te confirma disponibilidad, precio y horario.</p>
   <form id="request">
     <div class="row">
       <div><label for="origin">Zona de retiro</label><input id="origin" required maxlength="100" placeholder="Ej. San Francisco"></div>
       <div><label for="destination">Zona de entrega</label><input id="destination" required maxlength="100" placeholder="Ej. El Cangrejo"></div>
     </div>
-    <label for="details">¿Qué necesitas enviar o gestionar?</label>
+    <label id="details-label" for="details">¿Qué necesitas enviar o gestionar?</label>
     <textarea id="details" required maxlength="350" rows="3" placeholder="Ej. Retirar un sobre con documentos"></textarea>
+    <div id="package-fields">
     <label for="size">Tamaño aproximado <small>(opcional)</small></label>
     <select id="size">
       <option value="">Selecciona si aplica</option>
@@ -49,13 +50,15 @@ small,.hint{color:#ddd6cb;font-size:14px}
       <option>Paquete mediano</option>
       <option>Otro tamaño (consultar)</option>
     </select>
+    </div>
+    <div id="passenger-field" hidden><label for="passengers">Número de pasajeros</label><input id="passengers" type="number" min="1" max="99" step="1" disabled></div>
     <div class="row">
-      <div><label for="date">Día preferido de retiro</label><input id="date" type="date" required></div>
-      <div><label for="slot">Franja preferida de retiro</label><select id="slot" required>
+      <div><label id="date-label" for="date">Día preferido de retiro</label><input id="date" type="date" required></div>
+      <div><label id="slot-label" for="slot">Franja preferida de retiro</label><select id="slot" required>
         <option value="">Selecciona</option><option>Mañana</option><option>Tarde</option><option>Flexible</option>
       </select></div>
     </div>
-    <label for="deadline">¿Hay una hora límite de entrega? <small>(opcional)</small></label>
+    <label id="time-label" for="deadline">¿Hay una hora límite de entrega? <small>(opcional)</small></label>
     <input id="deadline" type="time">
     <button type="submit">Continuar por WhatsApp</button>
     <p class="hint">Se abrirá el chat con el resumen. Toca enviar en WhatsApp para que D&amp;G reciba la solicitud.</p>
@@ -65,7 +68,25 @@ small,.hint{color:#ddd6cb;font-size:14px}
 <script>
 const byId = id => document.getElementById(id);
 const dateField = byId('date');
-const textFields = ['origin', 'destination', 'details'];
+const transport = new URLSearchParams(window.location.search).get('servicio') === 'transporte';
+const textFields = transport ? ['origin', 'destination'] : ['origin', 'destination', 'details'];
+if (transport) {
+  document.title = 'Solicita tu transporte | D&G Multiservicios';
+  byId('heading').textContent = 'Solicita tu transporte';
+  byId('eyebrow').textContent = 'TRANSPORTE · PANAMÁ';
+  byId('intro').textContent = 'Cotiza un traslado al aeropuerto, un recorrido personalizado o un city tour. D&G te confirma disponibilidad, precio y horario por WhatsApp.';
+  byId('details-label').textContent = 'Detalles del viaje (opcional)';
+  byId('details').placeholder = 'Ej. Traslado al aeropuerto, dos maletas. Si aplica, indica el número de vuelo.';
+  byId('details').required = false;
+  byId('package-fields').hidden = true;
+  byId('size').disabled = true;
+  byId('passenger-field').hidden = false;
+  byId('passengers').disabled = false;
+  byId('passengers').required = true;
+  byId('date-label').textContent = 'Día del viaje';
+  byId('slot-label').textContent = 'Franja preferida de salida';
+  byId('time-label').textContent = 'Hora preferida de salida (opcional)';
+}
 const panamaDate = new Intl.DateTimeFormat('en-CA', {
   timeZone: 'America/Panama', year: 'numeric', month: '2-digit', day: '2-digit'
 });
@@ -92,15 +113,16 @@ byId('request').addEventListener('submit', event => {
   if (!dateField.reportValidity()) return;
   const date = dateField.value.split('-').reverse().join('/');
   const lines = [
-    'Hola D&G, quiero solicitar una encomienda o diligencia.',
+    transport ? 'Hola D&G, quiero solicitar transporte.' : 'Hola D&G, quiero solicitar una encomienda o diligencia.',
     'Zona de retiro: ' + byId('origin').value.trim(),
     'Zona de entrega: ' + byId('destination').value.trim(),
-    'Detalles: ' + byId('details').value.trim(),
-    'Día preferido de retiro: ' + date,
+    (transport ? 'Día del viaje: ' : 'Día preferido de retiro: ') + date,
     'Franja preferida: ' + byId('slot').value
   ];
-  if (byId('size').value) lines.push('Tamaño: ' + byId('size').value);
-  if (byId('deadline').value) lines.push('Hora límite de entrega: ' + byId('deadline').value + ' (hora de Panamá)');
+  if (byId('details').value.trim()) lines.push('Detalles: ' + byId('details').value.trim());
+  if (transport) lines.push('Pasajeros: ' + byId('passengers').value);
+  if (!transport && byId('size').value) lines.push('Tamaño: ' + byId('size').value);
+  if (byId('deadline').value) lines.push((transport ? 'Hora preferida de salida: ' : 'Hora límite de entrega: ') + byId('deadline').value + ' (hora de Panamá)');
   window.location.href = 'https://wa.me/50760951113?text=' + encodeURIComponent(lines.join('\n'));
 });
 </script>
