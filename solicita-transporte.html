@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Solicita tu transporte | D&amp;G Multiservicios</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#0b0d15;color:#f6f2eb;font:16px/1.55 system-ui,sans-serif}
+header,main,footer{width:min(760px,100%);margin:auto;padding:20px}
+header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #504335}
+header img{display:block;width:108px;height:66px;object-fit:contain}
+h1,a,.eyebrow{color:#efc263}
+h1{font-size:clamp(34px,7vw,54px);line-height:1.1;margin:8px 0}
+.eyebrow{font-size:13px;font-weight:750;letter-spacing:.12em}
+form{padding:clamp(16px,4vw,26px);background:#161923;border:1px solid #504335;border-radius:20px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+label{display:block;margin:12px 0 4px;font-weight:650}
+input,select,textarea,button{font:inherit}
+input,select,textarea{width:100%;min-height:44px;padding:8px 10px;background:#0d1019;color:#f6f2eb;border:1px solid #8b8177;border-radius:8px;color-scheme:dark}
+textarea{resize:vertical}
+button{width:100%;margin-top:16px;padding:13px;background:#efc263;color:#17130e;border:0;border-radius:10px;font-weight:800;cursor:pointer}
+small,.hint{color:#ddd6cb;font-size:14px}
+:focus-visible{outline:3px solid #efc263;outline-offset:3px}
+@media(max-width:540px){.row{grid-template-columns:1fr;gap:0}}
+</style>
+</head>
+<body>
+<header>
+  <a href="index.html"><img src="Emblema%20D%26G%20dorado%20y%20cromado.png" alt="Inicio de D&amp;G Multiservicios"></a>
+  <a href="index.html#servicios">Volver a servicios</a>
+</header>
+<main>
+  <p class="eyebrow" id="eyebrow">TRANSPORTE · PANAMÁ</p>
+  <h1 id="heading">Solicita tu transporte</h1>
+  <p id="intro">Cuéntanos qué necesitas. Envía la solicitud por WhatsApp y D&amp;G te confirma disponibilidad, precio y horario.</p>
+  <form id="request">
+    <div class="row">
+      <div><label for="origin">Punto de salida</label><input id="origin" required maxlength="100" placeholder="Ej. San Francisco"></div>
+      <div><label for="destination">Destino</label><input id="destination" required maxlength="100" placeholder="Ej. El Cangrejo"></div>
+    </div>
+    <label id="details-label" for="details">Detalles del viaje (opcional)</label>
+    <textarea id="details" maxlength="350" rows="3" placeholder="Ej. Número de vuelo y cantidad de maletas"></textarea>
+    <div id="passenger-field"><label for="passengers">Número de pasajeros</label><input id="passengers" type="number" min="1" max="99" step="1" required></div>
+    <div class="row">
+      <div><label id="date-label" for="date">Día del viaje</label><input id="date" type="date" required></div>
+      <div><label id="slot-label" for="slot">Franja preferida de salida</label><select id="slot" required>
+        <option value="">Selecciona</option><option>Mañana</option><option>Tarde</option><option>Flexible</option>
+      </select></div>
+    </div>
+    <label id="time-label" for="deadline">Hora preferida de salida <small>(opcional)</small></label>
+    <input id="deadline" type="time">
+    <button type="submit">Continuar por WhatsApp</button>
+    <p class="hint">Se abrirá el chat con el resumen. Toca enviar en WhatsApp para que D&amp;G reciba la solicitud.</p>
+  </form>
+</main>
+<footer>D&amp;G Multiservicios · Tu solución en un solo lugar.</footer>
+<script>
+const byId = id => document.getElementById(id);
+const dateField = byId('date');
+const textFields = ['origin', 'destination'];
+const panamaDate = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'America/Panama', year: 'numeric', month: '2-digit', day: '2-digit'
+});
+function updateMinimumDate() {
+  const parts = Object.fromEntries(panamaDate.formatToParts(new Date()).map(({type, value}) => [type, value]));
+  dateField.min = parts.year + '-' + parts.month + '-' + parts.day;
+}
+updateMinimumDate();
+for (const id of textFields) {
+  byId(id).addEventListener('input', () => byId(id).setCustomValidity(''));
+}
+
+byId('request').addEventListener('submit', event => {
+  event.preventDefault();
+  updateMinimumDate();
+  for (const id of textFields) {
+    const field = byId(id);
+    if (!field.value.trim()) {
+      field.setCustomValidity('Completa este campo.');
+      field.reportValidity();
+      return;
+    }
+  }
+  if (!dateField.reportValidity()) return;
+  const date = dateField.value.split('-').reverse().join('/');
+  const lines = [
+    'Hola D&G, quiero solicitar transporte.',
+    'Punto de salida: ' + byId('origin').value.trim(),
+    'Destino: ' + byId('destination').value.trim(),
+    'Día del viaje: ' + date,
+    'Franja preferida: ' + byId('slot').value
+  ];
+  if (byId('details').value.trim()) lines.push('Detalles: ' + byId('details').value.trim());
+  lines.push('Pasajeros: ' + byId('passengers').value);
+  if (byId('deadline').value) lines.push('Hora preferida de salida: ' + byId('deadline').value + ' (hora de Panamá)');
+  window.location.href = 'https://wa.me/50760951113?text=' + encodeURIComponent(lines.join('\n'));
+});
+</script>
+</body>
+</html>
